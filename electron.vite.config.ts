@@ -1,6 +1,9 @@
 import { resolve } from 'path'
 import { defineConfig } from 'electron-vite'
+import { PrimeVueResolver } from '@primevue/auto-import-resolver'
 import vue from '@vitejs/plugin-vue'
+import tailwindcss from '@tailwindcss/vite'
+import Components from 'unplugin-vue-components/vite'
 
 export default defineConfig({
   main: {},
@@ -8,9 +11,20 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
+        src: resolve('src/renderer/src'),
+        assets: resolve('src/renderer/src/assets')
       }
     },
-    plugins: [vue()]
+    plugins: [
+      vue(),
+      tailwindcss(),
+      Components({
+        resolvers: [PrimeVueResolver()],
+        dirs: ['src/components'],
+        directoryAsNamespace: true,
+        collapseSamePrefixes: true,
+        dts: 'src/components.d.ts'
+      })
+    ]
   }
 })
